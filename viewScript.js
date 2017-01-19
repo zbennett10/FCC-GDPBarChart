@@ -11,8 +11,6 @@ const margin  = {
 const graphHeight = 675 - margin.top - margin.bottom;
 const graphWidth = 980 - margin.left - margin.right;
 
-
-
 window.onload = function() {
     fetchGDP();
     setTimeout(drawGDP, 200);
@@ -34,7 +32,8 @@ function fetchGDP() {
 
 //draw graph
 function drawGDP() {
-    const axes = configureAxes();
+    const barWidth = Math.round(graphWidth / gdpDataArray.length);
+    const axesConfig = configureAxes();
 
     var chart = d3.select('#chart')
         .attr("width", graphWidth)
@@ -45,14 +44,26 @@ function drawGDP() {
     chart.append("g")
         .attr("class", "x-axis")
         .attr("transform", `translate(0, ${graphHeight})`)
-        .call(axes[0]);
+        .call(axesConfig.x);
 
     chart.append("g")
         .attr("class", "y-axis")
-        .call(axes[1]);
+        .call(axesConfig.y);
 
-    console.log(chart);
-    console.log(minDate, maxDate);
+    chart.selectAll('.bar')
+        .data(gdpDataArray)
+        .enter().append('rect')
+        .attr('class', 'bar')
+        .attr('x', function(d) {
+            return axesConfig.xscale(new Date(d[0]));
+        })
+        .attr('y', function(d) {
+            return axesConfig.yscale(d[1]);
+        })
+        .attr('height', function(d) {
+            return graphHeight - axesConfig.yscale(d[1]);
+        })
+        .attr('width', barWidth);
 }
 
 //configure the scale for the x and y axes
@@ -75,7 +86,12 @@ function configureAxes() {
 
     const yAxis = d3.axisLeft(yScale);
 
-    return [xAxis, yAxis];
+    return {
+        x: xAxis,
+        y: yAxis,
+        xscale: xScale,
+        yscale: yScale
+    };
 }
 
   
