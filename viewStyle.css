@@ -1,13 +1,24 @@
+body div {
+    font-family: 'montserrat';
+}
+
 #chart {
    height: 700px;
-   
 }
 
 .barHover {
     opacity: .5;
 }
 
-#display {
-    
+.row > div {
+    width: 200px;
+    height: 50px;
 }
-.
+
+#display > span {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 25px;
+    font-size: 48px;
+}

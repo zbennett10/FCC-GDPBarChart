@@ -13,7 +13,7 @@ const graphWidth = 980 - margin.left - margin.right;
 
 window.onload = function() {
     fetchGDP();
-    setTimeout(drawGDP, 200);
+    setTimeout(drawGDP, 300);
 }
 
 //fetch gross domestic product data
@@ -59,7 +59,6 @@ function drawGDP() {
             return graphHeight - axesConfig.yscale(d[1]);
         })
         .attr('width', barWidth);
-
         configureBarStyle(chart);
 }
 
@@ -93,15 +92,19 @@ function configureAxes() {
 
 //add event listeners that configure style for bars on chart
 function configureBarStyle(chart) {
+    console.log(gdpDataArray[0][1]);
     const chartGroup = chart._groups[0][0].children;
     const bars = $.makeArray(chartGroup).slice(2);
+    const gdpConstant = 28.226093;
     bars.forEach(bar => {
-        console.log(bar);
         bar.onmouseover = function() {
             this.classList.add('barHover');
+            var gdp = (this['height'].baseVal.value * gdpConstant).toFixed(1);
+            $(`<span>$${gdp} Billion</span>`).css('text-align', 'center').appendTo("#display");
         }
         bar.onmouseout = function() {
             this.classList.remove('barHover');
+            $(`#display`).empty();
         }
     });
 }
