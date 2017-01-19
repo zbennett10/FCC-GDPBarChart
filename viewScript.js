@@ -21,11 +21,6 @@ function fetchGDP() {
     $.getJSON(gdpUrl, function(gdpData) {
         $.each(gdpData.data, function(key, value) {
             gdpDataArray.push(value);
-            let listElement = document.createElement('li');
-            listElement.innerText = value.join(' ');
-            listElement.classList.add('list-group-item');
-            document.querySelector('.container').appendChild(listElement);  
-            
         });
     });
 }
@@ -64,6 +59,8 @@ function drawGDP() {
             return graphHeight - axesConfig.yscale(d[1]);
         })
         .attr('width', barWidth);
+
+        configureBarStyle(chart);
 }
 
 //configure the scale for the x and y axes
@@ -94,6 +91,20 @@ function configureAxes() {
     };
 }
 
+//add event listeners that configure style for bars on chart
+function configureBarStyle(chart) {
+    const chartGroup = chart._groups[0][0].children;
+    const bars = $.makeArray(chartGroup).slice(2);
+    bars.forEach(bar => {
+        console.log(bar);
+        bar.onmouseover = function() {
+            this.classList.add('barHover');
+        }
+        bar.onmouseout = function() {
+            this.classList.remove('barHover');
+        }
+    });
+}
   
 
 
